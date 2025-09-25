@@ -29,101 +29,99 @@ Este é um projeto final de desenvolvimento de sistema CRUD utilizando **Java**,
    ```bash
    git clone https://github.com/seu-usuario/projeto-final-grupo.git
 
-   nome projeto-final-grupo 
-  
-  <dependencies>
-    <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.2.23</version>
-    </dependency>
-  </dependencies>
-  import java.sql.*;
+
+nome projeto-final-grupo 
+  import Controller.UserController;
+  import View.UserView;
+  import Model.User;
+
+  import java.util.List;
 
   public class Main {
-    public static void main(String[] args) {
-        // Configurações do banco de dados (substitua pelos dados do Neon Console)
-        String url = "jdbc:postgresql://<HOST>:<PORT>/<DB_NAME>";
-        String username = "<USER>";
-        String password = "<PASSWORD>";
+      public static void main(String[] args) {
+          UserController controller = new UserController();
+          UserView view = new UserView();
 
-        try {
-            // Conexão com o banco de dados
-            Connection conn = DriverManager.getConnection(url, username, password);
-
-            // Exemplo de operação CRUD (CREATE)
-            String insertSQL = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(insertSQL);
-            stmt.setString(1, "Maria Souza");
-            stmt.setString(2, "maria@exemplo.com");
-            stmt.setString(3, "senha456");
-
-            int rowsAffected = stmt.executeUpdate();
-            System.out.println("Número de linhas inseridas: " + rowsAffected);
-
-            // Operação READ
-            String selectSQL = "SELECT * FROM usuarios";
-            Statement selectStmt = conn.createStatement();
-            ResultSet rs = selectStmt.executeQuery(selectSQL);
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String nome = rs.getString("nome");
-                String email = rs.getString("email");
-                System.out.println("ID: " + id + ", Nome: " + nome + ", E-mail: " + email);
-            }
-
-            // Fechar a conexão
-            conn.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+          List<User> usuarios = controller.listarUsuarios();
+          view.mostrarUsuarios(usuarios);
+      }
   }
-import java.sql.*;
 
-public class Main {
-    public static void main(String[] args) {
-        // Configurações do banco de dados (substitua pelos dados do Neon Console)
-        String url = "jdbc:postgresql://<HOST>:<PORT>/<DB_NAME>";
-        String username = "<USER>";
-        String password = "<PASSWORD>";
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-        try {
-            // Conexão com o banco de dados
-            Connection conn = DriverManager.getConnection(url, username, password);
+    <modelVersion>4.0.0</modelVersion>
 
-            // Operação CREATE: Inserir um novo usuário no banco
-            String insertSQL = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-            PreparedStatement insertStmt = conn.prepareStatement(insertSQL);
-            insertStmt.setString(1, "Maria Souza");
-            insertStmt.setString(2, "maria@exemplo.com");
-            insertStmt.setString(3, "senha456");
+    <groupId>com.example</groupId>
+    <artifactId>neon-db-test</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
-            int rowsAffected = insertStmt.executeUpdate();
-            System.out.println("Número de linhas inseridas: " + rowsAffected);
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
 
-            // Operação READ: Buscar todos os usuários cadastrados
-            String selectSQL = "SELECT * FROM usuarios";
-            Statement selectStmt = conn.createStatement();
-            ResultSet rs = selectStmt.executeQuery(selectSQL);
+    <dependencies>
 
-            // Exibir os usuários no console
-            System.out.println("Usuários cadastrados:");
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String nome = rs.getString("nome");
-                String email = rs.getString("email");
-                System.out.println("ID: " + id + ", Nome: " + nome + ", E-mail: " + email);
-            }
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
 
-            // Fechar a conexão
-            conn.close();
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+        </dependency>
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-}
 
+        <!-- JavaFX controls -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+
+        <!-- JavaFX graphics -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+            <classifier>linux</classifier>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
